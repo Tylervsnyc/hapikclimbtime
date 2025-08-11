@@ -416,3 +416,83 @@ export const subscribeToRealTimeUpdates = (callback: (climbRecords: ClimbRecord[
     console.log(`🔄 Real-time update: ${climbRecords.length} climbs for ${WEEKLY_DATA[CURRENT_WEEK].name}`);
   });
 };
+
+// Analytics functions for manager's view
+export const getWallPopularityStats = (): Array<{wallId: string, wallName: string, climbCount: number, percentage: number}> => {
+  const totalClimbs = climbRecords.length;
+  if (totalClimbs === 0) return [];
+
+  return WALLS.map(wall => {
+    const climbs = climbRecords.filter(climb => climb.wallId === wall.id);
+    const climbCount = climbs.length;
+    const percentage = totalClimbs > 0 ? (climbCount / totalClimbs) * 100 : 0;
+    
+    return {
+      wallId: wall.id,
+      wallName: wall.name,
+      climbCount,
+      percentage: Math.round(percentage * 10) / 10
+    };
+  })
+  .filter(wall => wall.climbCount > 0)
+  .sort((a, b) => b.climbCount - a.climbCount);
+};
+
+export const getStudentActivityStats = (): Array<{studentName: string, climbCount: number, averageTime: number, bestTime: number}> => {
+  return STUDENTS.map(student => {
+    const climbs = climbRecords.filter(climb => climb.studentName === student);
+    const climbCount = climbs.length;
+    
+    if (climbCount === 0) {
+      return {
+        studentName: student,
+        climbCount: 0,
+        averageTime: 0,
+        bestTime: 0
+      };
+    }
+    
+    const times = climbs.map(climb => climb.timeInSeconds);
+    const averageTime = Math.round(times.reduce((sum, time) => sum + time, 0) / times.length);
+    const bestTime = Math.min(...times);
+    
+    return {
+      studentName: student,
+      climbCount,
+      averageTime,
+      bestTime
+    };
+  })
+  .filter(student => student.climbCount > 0)
+  .sort((a, b) => b.climbCount - a.climbCount);
+};
+
+export const getWeeklyTrends = (): Array<{day: string, climbCount: number, uniqueStudents: number}> => {
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  const today = new Date();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay() + 1); // Monday
+  
+  return days.map((day, index) => {
+    const dayDate = new Date(startOfWeek);
+    dayDate.setDate(startOfWeek.getDate() + index);
+    
+    const dayStart = new Date(dayDate);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(dayDate);
+    dayEnd.setHours(23, 59, 59, 999);
+    
+    const dayClimbs = climbRecords.filter(climb => {
+      const climbDate = new Date(climb.timestamp);
+      return climbDate >= dayStart && climbDate <= dayEnd;
+    });
+    
+    const uniqueStudents = [...new Set(dayClimbs.map(climb => climb.studentName))].length;
+    
+    return {
+      day,
+      climbCount: dayClimbs.length,
+      uniqueStudents
+    };
+  });
+};

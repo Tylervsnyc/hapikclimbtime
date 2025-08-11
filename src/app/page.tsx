@@ -240,8 +240,41 @@ export default function DirectorsPage() {
         </p>
       </div>
 
-
-
+      {/* Manager's View Button */}
+      <div style={{ 
+        backgroundColor: 'white', 
+        borderRadius: '8px', 
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)', 
+        padding: '16px',
+        marginBottom: '12px'
+      }}>
+        <Link 
+          href="/manager"
+          style={{
+            display: 'block',
+            backgroundColor: '#7c3aed',
+            color: 'white',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            textDecoration: 'none',
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          }}
+        >
+          📊 Manager&apos;s Analytics Dashboard
+        </Link>
+        <p style={{ 
+          textAlign: 'center', 
+          color: '#6b7280', 
+          fontSize: '12px',
+          margin: '8px 0 0 0',
+          fontStyle: 'italic'
+        }}>
+          View climbing statistics, popular walls, and student performance
+        </p>
+      </div>
 
       </div>
     </div>
