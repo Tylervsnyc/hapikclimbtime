@@ -18,8 +18,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Analytics
-export const analytics = getAnalytics(app);
+// Initialize Analytics (only on client side)
+export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
 
 // Initialize Firestore
 export const db = getFirestore(app);

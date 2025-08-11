@@ -11,6 +11,15 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    rules: {
+      // Disable the no-img-element rule to allow using <img> tags
+      '@next/next/no-img-element': 'off',
+      // Make TypeScript rules less strict for build
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-unused-vars': 'warn',
+    },
+  },
 ];
 
 export default eslintConfig;

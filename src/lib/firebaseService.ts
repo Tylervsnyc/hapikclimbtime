@@ -26,7 +26,7 @@ const COLLECTIONS = {
 const toFirestoreTimestamp = (date: Date) => Timestamp.fromDate(date);
 
 // Convert Firestore Timestamp to Date
-const fromFirestoreTimestamp = (timestamp: any) => {
+const fromFirestoreTimestamp = (timestamp: Timestamp | null | undefined) => {
   if (timestamp && typeof timestamp.toDate === 'function') {
     return timestamp.toDate();
   }
