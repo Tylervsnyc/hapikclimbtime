@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { WALLS, saveClimb, getStudentWallStats, WallStats } from '@/data/store';
+import { WALLS, saveClimb, getStudentWallStats } from '@/data/store';
+import { WallStats } from '@/data/types';
 
 export default function ClimbPage() {
   // Get student and wall from URL
