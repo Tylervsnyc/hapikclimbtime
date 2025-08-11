@@ -112,6 +112,27 @@ export const WALLS: Wall[] = [
     description: 'A complex wall with intricate route puzzles',
     color: 'bg-violet-500',
     imageUrl: '/images/Mazes.png'
+  },
+  {
+    id: 'wall16',
+    name: 'Olympics',
+    description: 'A competitive wall designed for Olympic-style climbing challenges',
+    color: 'bg-orange-600',
+    imageUrl: '/images/olympics.png'
+  },
+  {
+    id: 'wall17',
+    name: 'Puzzle',
+    description: 'A brain-teasing wall that requires strategic problem-solving',
+    color: 'bg-purple-600',
+    imageUrl: '/images/puzzle.png'
+  },
+  {
+    id: 'wall18',
+    name: 'Windows',
+    description: 'A unique wall with window-like openings and creative routes',
+    color: 'bg-sky-500',
+    imageUrl: '/images/windows.png'
   }
 ];
 
