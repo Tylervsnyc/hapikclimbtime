@@ -100,14 +100,14 @@ export const WALLS: Wall[] = [
     name: 'Hapikwall',
     description: 'The signature wall with classic climbing challenges',
     color: 'bg-cyan-500',
-    imageUrl: '/images/hapikwall.png'
+    imageUrl: '/images/Hapikwall.png'
   },
   {
     id: 'wall15',
     name: 'Mazes',
     description: 'A complex wall with intricate route puzzles',
     color: 'bg-violet-500',
-    imageUrl: '/images/mazes.png'
+    imageUrl: '/images/Mazes.png'
   }
 ];
 

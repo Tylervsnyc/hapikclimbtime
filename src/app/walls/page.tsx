@@ -132,10 +132,10 @@ function WallsPageContent() {
               
               {/* Wall Name - Bigger and bolder red text */}
               <h3 style={{ 
-                fontSize: '12px', 
+                fontSize: '16px', 
                 fontWeight: 'bold', 
                 color: '#dc2626', 
-                marginBottom: '2px',
+                marginBottom: '4px',
                 textAlign: 'center',
                 lineHeight: '1.1'
               }}>
@@ -149,10 +149,10 @@ function WallsPageContent() {
                 padding: '2px',
                 textAlign: 'center'
               }}>
-                <div style={{ fontSize: '8px', fontWeight: 'bold', color: '#dc2626' }}>
+                <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#dc2626' }}>
                   {stats && stats.bestTime > 0 ? formatTime(stats.bestTime) : '00.00'}
                 </div>
-                <div style={{ fontSize: '6px', color: '#6b7280' }}>
+                <div style={{ fontSize: '10px', color: '#6b7280' }}>
                   Best
                 </div>
               </div>
