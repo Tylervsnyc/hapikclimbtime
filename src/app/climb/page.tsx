@@ -74,10 +74,10 @@ function ClimbPageContent() {
   };
 
   // Save the time to our data store
-  const saveTime = () => {
+  const saveTime = async () => {
     try {
       if (wallInfo) {
-        saveClimb(studentName, wallId, time);
+        await saveClimb(studentName, wallId, time);
         console.log(`Saved time: ${studentName} on ${wallInfo.name} - ${formatTime(time)}`);
         
         // Update the stats display

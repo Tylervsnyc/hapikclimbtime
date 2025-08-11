@@ -1,6 +1,11 @@
-// Simple data store for Hapik Climbing App
-// This is temporary - we'll replace it with a real database later!
+// Data store for Hapik Climbing App with Firebase integration
 import { ClimbRecord, Student, Wall, WallStats } from './types';
+import { 
+  saveClimbToFirebase, 
+  getWeekClimbs, 
+  subscribeToWeekClimbs,
+  getStudentWeekClimbs 
+} from '@/lib/firebaseService';
 
 // Our climbing walls data - using the 15 uploaded images!
 export const WALLS: Wall[] = [
@@ -141,7 +146,7 @@ export const STUDENTS = WEEKLY_DATA[CURRENT_WEEK].students;
 const generateId = () => 'climb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
 // Save a new climb record
-export const saveClimb = (studentName: string, wallId: string, timeInSeconds: number): ClimbRecord => {
+export const saveClimb = async (studentName: string, wallId: string, timeInSeconds: number): Promise<ClimbRecord> => {
   const wall = WALLS.find(w => w.id === wallId);
   if (!wall) {
     throw new Error(`Wall ${wallId} not found`);
@@ -157,10 +162,27 @@ export const saveClimb = (studentName: string, wallId: string, timeInSeconds: nu
     sessionId: currentSessionId
   };
 
+  // Add to memory
   climbRecords.push(newRecord);
   
-  // Save to localStorage for current week
-  localStorage.setItem(`hapik_climbs_${CURRENT_WEEK}`, JSON.stringify(climbRecords));
+  // Save to Firebase for real-time sharing across all devices
+  try {
+    await saveClimbToFirebase(studentName, wallId, timeInSeconds, CURRENT_WEEK);
+    console.log(`✅ Climb saved to Firebase: ${studentName} on ${wall.name} - ${timeInSeconds}s`);
+    
+    // Also save to localStorage as backup
+    localStorage.setItem(`hapik_climbs_${CURRENT_WEEK}`, JSON.stringify(climbRecords));
+    console.log(`📊 Total climbs this week: ${climbRecords.length}`);
+  } catch (error) {
+    console.error('❌ Failed to save climb to Firebase:', error);
+    // Still save to localStorage as backup
+    try {
+      localStorage.setItem(`hapik_climbs_${CURRENT_WEEK}`, JSON.stringify(climbRecords));
+      console.log(`💾 Saved to localStorage as backup`);
+    } catch (localError) {
+      console.error('❌ Failed to save to localStorage:', localError);
+    }
+  }
   
   return newRecord;
 };
@@ -236,8 +258,59 @@ export const getActiveStudentsThisWeek = (): string[] => {
   return [...new Set(climbRecords.map(climb => climb.studentName))];
 };
 
-// Load data from localStorage for current week
-export const initializeStore = () => {
+// Load data from Firebase and localStorage for current week
+export const initializeStore = async () => {
+  try {
+    // First try to load from Firebase (real-time data)
+    console.log(`🔄 Loading data from Firebase for week: ${CURRENT_WEEK}`);
+    const firebaseClimbs = await getWeekClimbs(CURRENT_WEEK);
+    
+    if (firebaseClimbs.length > 0) {
+      climbRecords = firebaseClimbs;
+      console.log(`✅ Loaded ${climbRecords.length} climbs from Firebase for ${WEEKLY_DATA[CURRENT_WEEK].name}`);
+      
+      // Update localStorage with Firebase data
+      localStorage.setItem(`hapik_climbs_${CURRENT_WEEK}`, JSON.stringify(climbRecords));
+      console.log(`💾 Updated localStorage with Firebase data`);
+    } else {
+      // Fallback to localStorage if no Firebase data
+      const saved = localStorage.getItem(`hapik_climbs_${CURRENT_WEEK}`);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        climbRecords = parsed.map((record: ClimbRecord) => ({
+          ...record,
+          timestamp: new Date(record.timestamp)
+        }));
+        console.log(`💾 Loaded ${climbRecords.length} climbs from localStorage for ${WEEKLY_DATA[CURRENT_WEEK].name}`);
+      } else {
+        console.log(`🆕 Starting fresh week: ${WEEKLY_DATA[CURRENT_WEEK].name}`);
+      }
+    }
+  } catch (error) {
+    console.error(`❌ Error loading data from Firebase:`, error);
+    
+    // Fallback to localStorage
+    try {
+      const saved = localStorage.getItem(`hapik_climbs_${CURRENT_WEEK}`);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        climbRecords = parsed.map((record: ClimbRecord) => ({
+          ...record,
+          timestamp: new Date(record.timestamp)
+        }));
+        console.log(`💾 Fallback: Loaded ${climbRecords.length} climbs from localStorage`);
+      } else {
+        console.log(`🆕 Starting fresh week: ${WEEKLY_DATA[CURRENT_WEEK].name}`);
+      }
+    } catch (localError) {
+      console.error(`❌ Error loading from localStorage:`, localError);
+      console.log(`🆕 Starting completely fresh`);
+    }
+  }
+};
+
+// Reload data from localStorage (useful when switching between students)
+export const reloadData = () => {
   try {
     const saved = localStorage.getItem(`hapik_climbs_${CURRENT_WEEK}`);
     if (saved) {
@@ -247,12 +320,15 @@ export const initializeStore = () => {
         ...record,
         timestamp: new Date(record.timestamp)
       }));
-      console.log(`Loaded ${climbRecords.length} climbs for ${WEEKLY_DATA[CURRENT_WEEK].name}`);
+      console.log(`🔄 Reloaded ${climbRecords.length} climbs for ${WEEKLY_DATA[CURRENT_WEEK].name}`);
+      return true;
     } else {
-      console.log(`Starting fresh week: ${WEEKLY_DATA[CURRENT_WEEK].name}`);
+      console.log(`📭 No saved data found for ${WEEKLY_DATA[CURRENT_WEEK].name}`);
+      return false;
     }
-  } catch {
-    console.log(`No saved data found for ${WEEKLY_DATA[CURRENT_WEEK].name}, starting fresh!`);
+  } catch (error) {
+    console.error(`❌ Error reloading data for ${WEEKLY_DATA[CURRENT_WEEK].name}:`, error);
+    return false;
   }
 };
 
@@ -280,3 +356,19 @@ export const startNewSession = (sessionName: string) => {
 // In-memory storage for climb records
 let climbRecords: ClimbRecord[] = [];
 let currentSessionId = 'session_' + Date.now();
+
+// Subscribe to real-time updates from Firebase
+export const subscribeToRealTimeUpdates = (callback: (climbs: ClimbRecord[]) => void) => {
+  return subscribeToWeekClimbs(CURRENT_WEEK, (firebaseClimbs) => {
+    // Update local memory
+    climbRecords = firebaseClimbs;
+    
+    // Update localStorage
+    localStorage.setItem(`hapik_climbs_${CURRENT_WEEK}`, JSON.stringify(climbRecords));
+    
+    // Call the callback to update UI
+    callback(climbRecords);
+    
+    console.log(`🔄 Real-time update: ${climbRecords.length} climbs for ${WEEKLY_DATA[CURRENT_WEEK].name}`);
+  });
+};

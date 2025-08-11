@@ -10,8 +10,11 @@ export default function DirectorsPage() {
   const [activeStudents, setActiveStudents] = useState(0);
 
   useEffect(() => {
-    initializeStore();
-    updateStats();
+    const initApp = async () => {
+      await initializeStore();
+      updateStats();
+    };
+    initApp();
   }, []);
 
   const updateStats = () => {
