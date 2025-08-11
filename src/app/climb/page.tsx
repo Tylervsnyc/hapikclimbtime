@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { WALLS, saveClimb, getStudentWallStats } from '@/data/store';
+import { WALLS, saveClimb, getStudentWallStats, subscribeToRealTimeUpdates } from '@/data/store';
 import { WallStats } from '@/data/types';
 
 function ClimbPageContent() {
@@ -23,11 +23,21 @@ function ClimbPageContent() {
   // Get wall info
   const wallInfo = WALLS.find(w => w.id === wallId);
 
-  // Load wall stats for this student
+  // Load wall stats for this student and subscribe to real-time updates
   useEffect(() => {
     if (studentName && wallId) {
       const stats = getStudentWallStats(studentName, wallId);
       setWallStats(stats);
+      
+      // Subscribe to real-time updates
+      const unsubscribe = subscribeToRealTimeUpdates(() => {
+        // Update stats when new data comes in
+        const updatedStats = getStudentWallStats(studentName, wallId);
+        setWallStats(updatedStats);
+      });
+      
+      // Cleanup subscription on unmount
+      return () => unsubscribe();
     }
   }, [studentName, wallId]);
 

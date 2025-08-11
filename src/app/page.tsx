@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { STUDENTS, getThisWeekClimbCount, getActiveStudentsThisWeek, initializeStore, WEEKLY_DATA, CURRENT_WEEK } from '@/data/store';
+import { STUDENTS, getThisWeekClimbCount, getActiveStudentsThisWeek, initializeStore, WEEKLY_DATA, CURRENT_WEEK, subscribeToRealTimeUpdates } from '@/data/store';
 
 export default function DirectorsPage() {
   const [selectedStudent, setSelectedStudent] = useState<string>('');
@@ -13,6 +13,14 @@ export default function DirectorsPage() {
     const initApp = async () => {
       await initializeStore();
       updateStats();
+      
+      // Subscribe to real-time updates
+      const unsubscribe = subscribeToRealTimeUpdates(() => {
+        updateStats();
+      });
+      
+      // Cleanup subscription on unmount
+      return () => unsubscribe();
     };
     initApp();
   }, []);
@@ -140,15 +148,38 @@ export default function DirectorsPage() {
         padding: '12px',
         marginBottom: '12px'
       }}>
-        <h3 style={{ 
-          fontSize: '16px', 
-          fontWeight: 'bold', 
-          color: '#1f2937', 
-          marginBottom: '8px', 
-          textAlign: 'center' 
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          marginBottom: '8px' 
         }}>
-          This Week&apos;s Stats ({WEEKLY_DATA[CURRENT_WEEK].name})
-        </h3>
+          <h3 style={{ 
+            fontSize: '16px', 
+            fontWeight: 'bold', 
+            color: '#1f2937', 
+            textAlign: 'center',
+            flex: 1
+          }}>
+            This Week&apos;s Stats ({WEEKLY_DATA[CURRENT_WEEK].name})
+          </h3>
+          <button
+            onClick={updateStats}
+            style={{
+              backgroundColor: '#059669',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '4px 8px',
+              fontSize: '12px',
+              cursor: 'pointer',
+              fontWeight: '500'
+            }}
+            title="Refresh stats"
+          >
+            🔄 Refresh
+          </button>
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
           <div style={{ 
             backgroundColor: '#fef2f2', 

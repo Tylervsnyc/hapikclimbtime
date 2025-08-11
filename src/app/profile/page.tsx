@@ -2,14 +2,28 @@
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { WALLS, getStudentStats } from '@/data/store';
-import { Suspense } from 'react';
+import { WALLS, getStudentStats, subscribeToRealTimeUpdates } from '@/data/store';
+import { Suspense, useState, useEffect } from 'react';
 
 function ProfilePageContent() {
   // Get the student name from the URL
   const searchParams = useSearchParams();
   const studentName = searchParams.get('student') || 'Student';
 
+  // State to trigger re-renders when data updates
+  const [, setUpdateTrigger] = useState(0);
+  
+  // Subscribe to real-time updates
+  useEffect(() => {
+    const unsubscribe = subscribeToRealTimeUpdates(() => {
+      // Trigger re-render to show updated stats
+      setUpdateTrigger((prev: number) => prev + 1);
+    });
+    
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+  
   // Get student stats
   const studentStats = getStudentStats(studentName);
 

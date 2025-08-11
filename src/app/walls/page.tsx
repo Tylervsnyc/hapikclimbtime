@@ -2,13 +2,27 @@
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { WALLS, getStudentWallStats } from '@/data/store';
-import { Suspense } from 'react';
+import { WALLS, getStudentWallStats, subscribeToRealTimeUpdates } from '@/data/store';
+import { Suspense, useState, useEffect } from 'react';
 
 function WallsPageContent() {
   // Get the student name from the URL
   const searchParams = useSearchParams();
   const studentName = searchParams.get('student') || 'Student';
+  
+  // State to trigger re-renders when data updates
+  const [, setUpdateTrigger] = useState(0);
+  
+  // Subscribe to real-time updates
+  useEffect(() => {
+    const unsubscribe = subscribeToRealTimeUpdates(() => {
+      // Trigger re-render to show updated stats
+      setUpdateTrigger((prev: number) => prev + 1);
+    });
+    
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
 
   // Format time as MM:SS or 00.00 for under 1 minute
   const formatTime = (seconds: number) => {
@@ -73,11 +87,30 @@ function WallsPageContent() {
         borderRadius: '8px', 
         padding: '8px', 
         textAlign: 'center',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between'
       }}>
-        <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: '#1f2937' }}>
+        <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: '#1f2937', flex: 1 }}>
           Time {studentName} on the Walls! 🧗‍♂️
         </h2>
+        <button
+          onClick={() => setUpdateTrigger(prev => prev + 1)}
+          style={{
+            backgroundColor: '#059669',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            padding: '4px 8px',
+            fontSize: '12px',
+            cursor: 'pointer',
+            fontWeight: '500'
+          }}
+          title="Refresh stats"
+        >
+          🔄
+        </button>
       </div>
 
       {/* Walls Grid - Larger, more legible 3x5 layout for 15 walls with scrolling */}
