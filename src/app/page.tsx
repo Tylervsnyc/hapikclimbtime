@@ -38,7 +38,7 @@ export default function DirectorsPage() {
           />
         </div>
         <p style={{ color: '#6b7280', fontSize: '14px' }}>
-          Camp Director's Timer
+          Camp Director&apos;s Timer
         </p>
       </div>
 
@@ -123,7 +123,7 @@ export default function DirectorsPage() {
                 fontSize: '14px'
               }}
             >
-              View {selectedStudent}'s Profile 📊
+              View {selectedStudent}&apos;s Profile 📊
             </Link>
           </div>
         )}
@@ -144,7 +144,7 @@ export default function DirectorsPage() {
           marginBottom: '8px', 
           textAlign: 'center' 
         }}>
-          Today's Quick Stats
+          Today&apos;s Quick Stats
         </h3>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
           <div style={{ 

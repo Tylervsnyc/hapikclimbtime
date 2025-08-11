@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { WALLS, saveClimb, getStudentWallStats } from '@/data/store';
+import { WALLS, saveClimb, getStudentWallStats, WallStats } from '@/data/store';
 
 export default function ClimbPage() {
   // Get student and wall from URL
@@ -16,7 +16,7 @@ export default function ClimbPage() {
   const [isRunning, setIsRunning] = useState(false);
   const [time, setTime] = useState(0);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [wallStats, setWallStats] = useState<any>(null);
+  const [wallStats, setWallStats] = useState<WallStats | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   
   // Get wall info

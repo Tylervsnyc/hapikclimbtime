@@ -93,7 +93,7 @@ export default function WallsPage() {
         paddingBottom: '20px',
         minWidth: '0'
       }}>
-        {WALLS.map((wall, index) => {
+        {WALLS.map((wall) => {
           const stats = getStudentWallStats(studentName, wall.id);
           return (
             <Link 
@@ -167,7 +167,7 @@ export default function WallsPage() {
         color: '#9ca3af', 
         fontSize: '10px' 
       }}>
-        <p>Tap a wall to start timing {studentName}'s climb!</p>
+        <p>Tap a wall to start timing {studentName}&apos;s climb!</p>
       </div>
     </div>
   );

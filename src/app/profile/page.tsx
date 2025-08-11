@@ -11,7 +11,7 @@ export default function ProfilePage() {
 
   // Get student stats
   const studentStats = getStudentStats(studentName);
-  const studentClimbs = getStudentClimbs(studentName);
+
 
   // Format time as MM:SS or 00.00 for under 1 minute
   const formatTime = (seconds: number) => {
@@ -60,7 +60,7 @@ export default function ProfilePage() {
         </Link>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#dc2626' }}>
-            {studentName}'s Profile
+            {studentName}&apos;s Profile
           </span>
         </div>
         <div style={{ width: '64px' }}></div>

@@ -1,6 +1,6 @@
 // Simple data store for Hapik Climbing App
 // This is temporary - we'll replace it with a real database later!
-import { ClimbRecord, Student, Wall, Session, WallStats } from './types';
+import { ClimbRecord, Student, Wall, WallStats } from './types';
 
 // Our climbing walls data - using the 15 uploaded images!
 export const WALLS: Wall[] = [
@@ -250,12 +250,12 @@ export const initializeStore = () => {
     if (saved) {
       const parsed = JSON.parse(saved);
       // Convert timestamp strings back to Date objects
-      climbRecords = parsed.map((record: any) => ({
+      climbRecords = parsed.map((record: ClimbRecord) => ({
         ...record,
         timestamp: new Date(record.timestamp)
       }));
     }
-  } catch (error) {
+  } catch {
     console.log('No saved data found, starting fresh!');
   }
 };
