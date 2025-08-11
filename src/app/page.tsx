@@ -11,23 +11,36 @@ export default function DirectorsPage() {
 
   useEffect(() => {
     const initApp = async () => {
+      console.log('🚀 Initializing app...');
       await initializeStore();
       updateStats();
       
+      console.log('📡 Setting up real-time subscription...');
       // Subscribe to real-time updates
       const unsubscribe = subscribeToRealTimeUpdates(() => {
+        console.log('🔄 Real-time update received, updating stats...');
         updateStats();
       });
       
+      console.log('✅ Real-time subscription set up successfully');
+      
       // Cleanup subscription on unmount
-      return () => unsubscribe();
+      return () => {
+        console.log('🧹 Cleaning up real-time subscription');
+        unsubscribe();
+      };
     };
     initApp();
   }, []);
 
   const updateStats = () => {
-    setTodayClimbs(getThisWeekClimbCount());
-    setActiveStudents(getActiveStudentsThisWeek().length);
+    const climbCount = getThisWeekClimbCount();
+    const activeStudentsCount = getActiveStudentsThisWeek().length;
+    
+    console.log(`📊 Updating stats: ${climbCount} climbs, ${activeStudentsCount} active students`);
+    
+    setTodayClimbs(climbCount);
+    setActiveStudents(activeStudentsCount);
   };
 
   return (

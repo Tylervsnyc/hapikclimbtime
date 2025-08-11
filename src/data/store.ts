@@ -151,39 +151,59 @@ export const saveClimb = async (studentName: string, wallId: string, timeInSecon
     throw new Error(`Wall ${wallId} not found`);
   }
 
-  const newRecord: ClimbRecord = {
-    id: generateId(),
-    studentName,
-    wallId,
-    wallName: wall.name,
-    timeInSeconds,
-    timestamp: new Date(),
-    sessionId: currentSessionId
-  };
+  console.log(`🚀 Starting to save climb: ${studentName} on ${wall.name} - ${timeInSeconds}s`);
 
-  // Add to memory
-  climbRecords.push(newRecord);
-  
-  // Save to Firebase for real-time sharing across all devices
+  // Save to Firebase first for real-time sharing across all devices
   try {
-    await saveClimbToFirebase(studentName, wallId, timeInSeconds, CURRENT_WEEK);
-    console.log(`✅ Climb saved to Firebase: ${studentName} on ${wall.name} - ${timeInSeconds}s`);
+    const firebaseId = await saveClimbToFirebase(studentName, wallId, timeInSeconds, CURRENT_WEEK);
+    console.log(`✅ Climb saved to Firebase with ID: ${firebaseId}`);
     
-    // Also save to localStorage as backup
+    // Create record with Firebase ID
+    const newRecord: ClimbRecord = {
+      id: firebaseId, // Use Firebase ID instead of generated ID
+      studentName,
+      wallId,
+      wallName: wall.name,
+      timeInSeconds,
+      timestamp: new Date(),
+      sessionId: currentSessionId
+    };
+
+    // Add to memory
+    climbRecords.push(newRecord);
+    
+    // Save to localStorage as backup
     localStorage.setItem(`hapik_climbs_${CURRENT_WEEK}`, JSON.stringify(climbRecords));
     console.log(`📊 Total climbs this week: ${climbRecords.length}`);
+    
+    return newRecord;
   } catch (error) {
     console.error('❌ Failed to save climb to Firebase:', error);
-    // Still save to localStorage as backup
+    
+    // Fallback: create record with generated ID and save to localStorage only
+    const newRecord: ClimbRecord = {
+      id: generateId(),
+      studentName,
+      wallId,
+      wallName: wall.name,
+      timeInSeconds,
+      timestamp: new Date(),
+      sessionId: currentSessionId
+    };
+
+    // Add to memory
+    climbRecords.push(newRecord);
+    
+    // Save to localStorage as backup
     try {
       localStorage.setItem(`hapik_climbs_${CURRENT_WEEK}`, JSON.stringify(climbRecords));
       console.log(`💾 Saved to localStorage as backup`);
     } catch (localError) {
       console.error('❌ Failed to save to localStorage:', localError);
     }
+    
+    return newRecord;
   }
-  
-  return newRecord;
 };
 
 // Get all climb records for a student
