@@ -3,8 +3,9 @@
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { WALLS, getStudentWallStats } from '@/data/store';
+import { Suspense } from 'react';
 
-export default function WallsPage() {
+function WallsPageContent() {
   // Get the student name from the URL
   const searchParams = useSearchParams();
   const studentName = searchParams.get('student') || 'Student';
@@ -170,5 +171,26 @@ export default function WallsPage() {
         <p>Tap a wall to start timing {studentName}&apos;s climb!</p>
       </div>
     </div>
+  );
+}
+
+export default function WallsPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ 
+        height: '100vh', 
+        background: 'linear-gradient(to bottom, #fef2f2, white)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <h2>Loading Walls...</h2>
+          <p>Please wait while we load the climbing walls.</p>
+        </div>
+      </div>
+    }>
+      <WallsPageContent />
+    </Suspense>
   );
 }

@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { WALLS, saveClimb, getStudentWallStats } from '@/data/store';
 import { WallStats } from '@/data/types';
 
-export default function ClimbPage() {
+function ClimbPageContent() {
   // Get student and wall from URL
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -102,7 +102,31 @@ export default function ClimbPage() {
   };
 
   if (!wallInfo) {
-    return <div>Wall not found!</div>;
+    return (
+      <div style={{ 
+        height: '100vh', 
+        background: 'linear-gradient(to bottom, #fef2f2, white)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <h2>Wall Not Found</h2>
+          <p>The selected wall could not be found.</p>
+          <Link href="/" style={{
+            backgroundColor: '#dc2626',
+            color: 'white',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            textDecoration: 'none',
+            display: 'inline-block',
+            marginTop: '16px'
+          }}>
+            Go Home
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -113,7 +137,7 @@ export default function ClimbPage() {
       overflowX: 'hidden',
       minWidth: '0'
     }}>
-      {/* Header with back button and Hapik logo */}
+      {/* Header - Compact with small logo */}
       <div style={{ 
         display: 'flex', 
         alignItems: 'center', 
@@ -123,7 +147,7 @@ export default function ClimbPage() {
         boxShadow: '0 1px 3px rgba(0,0,0,0.1)' 
       }}>
         <Link 
-          href={`/walls?student=${encodeURIComponent(studentName)}`}
+          href="/" 
           style={{
             backgroundColor: '#f3f4f6',
             color: '#374151',
@@ -151,41 +175,41 @@ export default function ClimbPage() {
         <div style={{ width: '64px' }}></div>
       </div>
 
-      {/* Wall Image Sliver - Just a thin strip at the top */}
+      {/* Wall Image Header */}
       <div style={{ 
-        width: '100%', 
-        height: '60px', 
+        width: '100%',
+        height: '60px',
         overflow: 'hidden',
         marginBottom: '8px'
       }}>
         <img 
           src={wallInfo.imageUrl} 
-          alt={`${wallInfo.name} climbing wall`}
-          style={{ 
-            width: '100%', 
-            height: '100%', 
-            objectFit: 'cover' 
+          alt={wallInfo.name}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
           }}
         />
       </div>
 
-      {/* Student Info */}
+      {/* Student Info - Super compact */}
       <div style={{ 
-        textAlign: 'center', 
-        marginBottom: '16px',
-        padding: '0 12px'
+        backgroundColor: 'white', 
+        margin: '0 12px 8px 12px', 
+        borderRadius: '8px', 
+        padding: '8px', 
+        textAlign: 'center',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
       }}>
         <h2 style={{ 
-          fontSize: '18px', 
+          fontSize: '16px', 
           fontWeight: 'bold', 
-          color: '#1f2937', 
-          marginBottom: '4px' 
+          color: '#1f2937',
+          margin: '0'
         }}>
-          {studentName} on {wallInfo.name}
+          Timing {studentName} on {wallInfo.name}
         </h2>
-        <p style={{ color: '#6b7280', fontSize: '12px' }}>
-          {wallInfo.description}
-        </p>
       </div>
 
       {/* Main Timer Section */}
@@ -198,69 +222,46 @@ export default function ClimbPage() {
       }}>
         {/* Big Timer Display */}
         <div style={{ 
+          textAlign: 'center', 
+          marginBottom: '24px',
           backgroundColor: 'white',
           borderRadius: '16px',
           padding: '24px',
-          textAlign: 'center',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-          marginBottom: '16px'
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
         }}>
           <div style={{ 
-            fontSize: '48px', 
+            fontSize: '64px', 
             fontFamily: 'monospace', 
             fontWeight: 'bold', 
-            color: '#dc2626', 
-            marginBottom: '8px' 
+            color: '#dc2626',
+            marginBottom: '16px'
           }}>
             {formatTime(time)}
-          </div>
-          <div style={{ color: '#6b7280', fontSize: '14px', marginBottom: '16px' }}>
-            {isRunning ? 'Climbing...' : 'Ready to start'}
           </div>
           
           {/* Timer Controls - Much Bigger Button */}
           <button
             onClick={toggleTimer}
             style={{
-              width: '100%',
-              padding: '24px',
-              borderRadius: '16px',
-              fontSize: '24px',
-              fontWeight: 'bold',
-              border: 'none',
-              cursor: 'pointer',
-              backgroundColor: isRunning ? '#dc2626' : '#16a34a',
+              backgroundColor: isRunning ? '#dc2626' : '#059669',
               color: 'white',
-              transition: 'all 0.2s ease',
+              padding: '20px 40px',
+              borderRadius: '16px',
+              border: 'none',
+              fontWeight: 'bold',
+              fontSize: '24px',
+              cursor: 'pointer',
+              minHeight: '80px',
               boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-              minHeight: '80px'
+              textTransform: 'uppercase',
+              transition: 'all 0.2s ease'
             }}
           >
-            {isRunning ? '⏹️ STOP CLIMB' : '▶️ START CLIMB'}
+            {isRunning ? '⏹️ Stop Timer' : '▶️ Start Timer'}
           </button>
-          
-          {!isRunning && time > 0 && (
-            <button
-              onClick={resetTimer}
-              style={{
-                width: '100%',
-                padding: '12px',
-                backgroundColor: '#6b7280',
-                color: 'white',
-                borderRadius: '8px',
-                border: 'none',
-                fontWeight: 'bold',
-                fontSize: '14px',
-                cursor: 'pointer',
-                marginTop: '8px'
-              }}
-            >
-              🔄 Reset Timer
-            </button>
-          )}
         </div>
 
-        {/* Student Stats for this Wall */}
+        {/* Wall Statistics */}
         {wallStats && (
           <div style={{ 
             backgroundColor: 'white',
@@ -269,19 +270,18 @@ export default function ClimbPage() {
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
           }}>
             <h3 style={{ 
+              fontSize: '16px', 
               fontWeight: 'bold', 
               color: '#1f2937', 
-              marginBottom: '12px', 
-              fontSize: '16px',
+              marginBottom: '12px',
               textAlign: 'center'
             }}>
-              Your Stats on {wallInfo.name}
+              {studentName}&apos;s Stats on {wallInfo.name}
             </h3>
             <div style={{ 
               display: 'grid', 
               gridTemplateColumns: '1fr 1fr', 
-              gap: '12px', 
-              textAlign: 'center' 
+              gap: '12px' 
             }}>
               <div style={{ 
                 backgroundColor: '#fef2f2', 
@@ -385,5 +385,26 @@ export default function ClimbPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ClimbPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ 
+        height: '100vh', 
+        background: 'linear-gradient(to bottom, #fef2f2, white)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <h2>Loading Timer...</h2>
+          <p>Please wait while we load the climbing timer.</p>
+        </div>
+        </div>
+    }>
+      <ClimbPageContent />
+    </Suspense>
   );
 }

@@ -3,15 +3,15 @@
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { WALLS, getStudentStats } from '@/data/store';
+import { Suspense } from 'react';
 
-export default function ProfilePage() {
+function ProfilePageContent() {
   // Get the student name from the URL
   const searchParams = useSearchParams();
   const studentName = searchParams.get('student') || 'Student';
 
   // Get student stats
   const studentStats = getStudentStats(studentName);
-
 
   // Format time as MM:SS or 00.00 for under 1 minute
   const formatTime = (seconds: number) => {
@@ -239,5 +239,26 @@ export default function ProfilePage() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={
+      <div style={{ 
+        height: '100vh', 
+        background: 'linear-gradient(to bottom, #fef2f2, white)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <h2>Loading Profile...</h2>
+          <p>Please wait while we load the climbing data.</p>
+        </div>
+      </div>
+    }>
+      <ProfilePageContent />
+    </Suspense>
   );
 }
