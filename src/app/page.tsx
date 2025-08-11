@@ -47,11 +47,29 @@ export default function DirectorsPage() {
     <div style={{ 
       height: '100vh', 
       background: 'linear-gradient(to bottom, #fef2f2, white)',
+      backgroundImage: 'url(/images/stairs.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      position: 'relative',
       padding: '8px',
       overflow: 'hidden',
       overflowX: 'hidden',
       minWidth: '0'
     }}>
+      {/* Semi-transparent overlay to make background subtle */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.6)', // 60% white overlay = 40% transparent background
+        zIndex: 0
+      }}></div>
+      
+      {/* Content container with higher z-index */}
+      <div style={{ position: 'relative', zIndex: 1 }}>
       {/* Header with Hapik branding */}
       <div style={{ textAlign: 'center', marginBottom: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
@@ -206,6 +224,7 @@ export default function DirectorsPage() {
         fontSize: '12px' 
       }}>
         <p>Select a student above to start timing their climbs or view their profile!</p>
+      </div>
       </div>
     </div>
   );
