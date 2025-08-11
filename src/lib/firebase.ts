@@ -2,19 +2,24 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { getAuth, connectAuthEmulator } from 'firebase/auth';
+import { getAnalytics } from 'firebase/analytics';
 
-// Your Firebase config - you'll need to replace these with your actual values
+// Your Firebase config
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDKM3HhRJ6YOuQkVM_VCb871VURhfTaGMM",
+  authDomain: "hapik-climbing-app.firebaseapp.com",
+  projectId: "hapik-climbing-app",
+  storageBucket: "hapik-climbing-app.firebasestorage.app",
+  messagingSenderId: "215313709367",
+  appId: "1:215313709367:web:44f4726929258f32cd02b2",
+  measurementId: "G-H7MYBR4K2T"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Initialize Analytics
+export const analytics = getAnalytics(app);
 
 // Initialize Firestore
 export const db = getFirestore(app);
