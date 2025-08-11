@@ -1,26 +1,69 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+/* Hapik Climbing App Custom Colors */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --hapik-red: #dc2626; /* Main Hapik red color */
+  --hapik-red-light: #fca5a5; /* Lighter red for accents */
+  --hapik-red-dark: #991b1b; /* Darker red for buttons */
+  --climbing-orange: #ea580c; /* Orange for climbing holds */
+  --climbing-blue: #0ea5e9; /* Blue for sky/background */
+  --climbing-gray: #374151; /* Dark gray for text */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Custom utility classes for Hapik - Fixed to use actual CSS instead of @apply */
+@layer components {
+  .btn-hapik {
+    background-color: #dc2626;
+    color: white;
+    font-weight: bold;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+  }
+  
+  .btn-hapik:hover {
+    background-color: #b91c1c;
+  }
+  
+  .btn-hapik-secondary {
+    background-color: #4b5563;
+    color: white;
+    font-weight: bold;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+  }
+  
+  .btn-hapik-secondary:hover {
+    background-color: #374151;
+  }
+  
+  .text-hapik {
+    color: #dc2626;
+  }
+  
+  .bg-hapik {
+    background-color: #dc2626;
   }
 }
 
+/* Mobile-first design - no scrolling by default */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar for walls page if needed */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--hapik-red);
+  border-radius: 3px;
 }
