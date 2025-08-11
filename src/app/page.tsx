@@ -193,7 +193,7 @@ export default function DirectorsPage() {
         backgroundColor: 'white', 
         borderRadius: '8px', 
         boxShadow: '0 1px 3px rgba(0,0,0,0.1)', 
-        padding: '12px',
+        padding: '16px',
         marginBottom: '12px'
       }}>
         <h3 style={{ 
@@ -205,7 +205,7 @@ export default function DirectorsPage() {
         }}>
           This Week&apos;s Stats ({WEEKLY_DATA[CURRENT_WEEK].name})
         </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
           <div style={{ 
             backgroundColor: '#fef2f2', 
             borderRadius: '8px', 
@@ -229,19 +229,20 @@ export default function DirectorsPage() {
             <div style={{ fontSize: '12px', color: '#6b7280' }}>Students This Week</div>
           </div>
         </div>
+        <p style={{ 
+          textAlign: 'center', 
+          color: '#6b7280', 
+          fontSize: '13px',
+          margin: 0,
+          fontStyle: 'italic'
+        }}>
+          Select a student above to start timing their climbs or view their profile!
+        </p>
       </div>
 
 
 
-      {/* Navigation Note */}
-      <div style={{ 
-        textAlign: 'center', 
-        marginTop: '8px', 
-        color: '#9ca3af', 
-        fontSize: '12px' 
-      }}>
-        <p>Select a student above to start timing their climbs or view their profile!</p>
-      </div>
+
       </div>
     </div>
   );
