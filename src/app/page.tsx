@@ -49,7 +49,7 @@ export default function DirectorsPage() {
           />
         </div>
         <p style={{ color: '#6b7280', fontSize: '14px' }}>
-          Camp Director&apos;s Timer - {WEEKLY_DATA[CURRENT_WEEK].name}
+          Camp Director&apos;s Timer - {WEEKLY_DATA[CURRENT_WEEK].name} (v2.0)
         </p>
       </div>
 
