@@ -76,7 +76,7 @@ export const WALLS: Wall[] = [
   },
   {
     id: 'wall11',
-    name: 'Fishscales',
+    name: 'Fish Scales',
     description: 'A textured wall with overlapping scale-like holds',
     color: 'bg-rose-500',
     imageUrl: '/images/fishscales.png'
@@ -97,7 +97,7 @@ export const WALLS: Wall[] = [
   },
   {
     id: 'wall14',
-    name: 'Hapikwall',
+    name: 'Hapik Wall',
     description: 'The signature wall with classic climbing challenges',
     color: 'bg-cyan-500',
     imageUrl: '/images/Hapikwall.png'
