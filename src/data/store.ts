@@ -111,22 +111,31 @@ export const WALLS: Wall[] = [
   }
 ];
 
-// Our students data
-export const STUDENTS = [
-  'Emma',
-  'Petra',
-  'Milo',
-  'Hudson',
-  'Walker',
-  'Thalia',
-  'Scarlett',
-  'Aiden',
-  'Danielle'
-];
+// Weekly data configuration
+export const WEEKLY_DATA = {
+  'aug11-15': {
+    name: 'August 11-15, 2024',
+    startDate: '2024-08-11',
+    endDate: '2024-08-15',
+    students: [
+      'Emma',
+      'Petra', 
+      'Milo',
+      'Hudson',
+      'Walker',
+      'Thalia',
+      'Scarlett',
+      'Aiden',
+      'Danielle'
+    ]
+  }
+};
 
-// In-memory storage for climb records
-let climbRecords: ClimbRecord[] = [];
-let currentSessionId = 'session_' + Date.now();
+// Current week - change this to switch between weeks
+export const CURRENT_WEEK = 'aug11-15';
+
+// Get current week's students
+export const STUDENTS = WEEKLY_DATA[CURRENT_WEEK].students;
 
 // Helper function to generate unique IDs
 const generateId = () => 'climb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -150,8 +159,8 @@ export const saveClimb = (studentName: string, wallId: string, timeInSeconds: nu
 
   climbRecords.push(newRecord);
   
-  // Save to localStorage for persistence (temporary solution)
-  localStorage.setItem('hapik_climbs', JSON.stringify(climbRecords));
+  // Save to localStorage for current week
+  localStorage.setItem(`hapik_climbs_${CURRENT_WEEK}`, JSON.stringify(climbRecords));
   
   return newRecord;
 };
@@ -217,36 +226,20 @@ export const getStudentStats = (studentName: string): Student => {
   };
 };
 
-// Get today's climb count
-export const getTodayClimbCount = (): number => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  
-  return climbRecords.filter(climb => {
-    const climbDate = new Date(climb.timestamp);
-    climbDate.setHours(0, 0, 0, 0);
-    return climbDate.getTime() === today.getTime();
-  }).length;
+// Get this week's climb count
+export const getThisWeekClimbCount = (): number => {
+  return climbRecords.length; // All records in current week
 };
 
-// Get active students today
-export const getActiveStudentsToday = (): string[] => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  
-  const todayClimbs = climbRecords.filter(climb => {
-    const climbDate = new Date(climb.timestamp);
-    climbDate.setHours(0, 0, 0, 0);
-    return climbDate.getTime() === today.getTime();
-  });
-
-  return [...new Set(todayClimbs.map(climb => climb.studentName))];
+// Get active students this week
+export const getActiveStudentsThisWeek = (): string[] => {
+  return [...new Set(climbRecords.map(climb => climb.studentName))];
 };
 
-// Load data from localStorage on app start
+// Load data from localStorage for current week
 export const initializeStore = () => {
   try {
-    const saved = localStorage.getItem('hapik_climbs');
+    const saved = localStorage.getItem(`hapik_climbs_${CURRENT_WEEK}`);
     if (saved) {
       const parsed = JSON.parse(saved);
       // Convert timestamp strings back to Date objects
@@ -254,17 +247,20 @@ export const initializeStore = () => {
         ...record,
         timestamp: new Date(record.timestamp)
       }));
+      console.log(`Loaded ${climbRecords.length} climbs for ${WEEKLY_DATA[CURRENT_WEEK].name}`);
+    } else {
+      console.log(`Starting fresh week: ${WEEKLY_DATA[CURRENT_WEEK].name}`);
     }
   } catch {
-    console.log('No saved data found, starting fresh!');
+    console.log(`No saved data found for ${WEEKLY_DATA[CURRENT_WEEK].name}, starting fresh!`);
   }
 };
 
-// Clear all data (useful for testing)
+// Clear all data for current week
 export const clearAllData = () => {
   climbRecords = [];
-  localStorage.removeItem('hapik_climbs');
-  console.log('All climbing data cleared! Starting fresh.');
+  localStorage.removeItem(`hapik_climbs_${CURRENT_WEEK}`);
+  console.log(`All climbing data cleared for ${WEEKLY_DATA[CURRENT_WEEK].name}!`);
 };
 
 // Clear all data and start fresh
@@ -272,7 +268,7 @@ export const startFresh = () => {
   clearAllData();
   // Reset session
   currentSessionId = 'session_' + Date.now();
-  console.log('Fresh session started:', currentSessionId);
+  console.log(`Fresh session started for ${WEEKLY_DATA[CURRENT_WEEK].name}:`, currentSessionId);
 };
 
 // Start a new session
@@ -280,3 +276,7 @@ export const startNewSession = (sessionName: string) => {
   currentSessionId = 'session_' + Date.now();
   console.log(`Started new session: ${sessionName}`);
 };
+
+// In-memory storage for climb records
+let climbRecords: ClimbRecord[] = [];
+let currentSessionId = 'session_' + Date.now();

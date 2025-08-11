@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { STUDENTS, getTodayClimbCount, getActiveStudentsToday, initializeStore } from '@/data/store';
+import { STUDENTS, getThisWeekClimbCount, getActiveStudentsThisWeek, initializeStore, WEEKLY_DATA, CURRENT_WEEK } from '@/data/store';
 
 export default function DirectorsPage() {
   const [selectedStudent, setSelectedStudent] = useState<string>('');
@@ -15,8 +15,8 @@ export default function DirectorsPage() {
   }, []);
 
   const updateStats = () => {
-    setTodayClimbs(getTodayClimbCount());
-    setActiveStudents(getActiveStudentsToday().length);
+    setTodayClimbs(getThisWeekClimbCount());
+    setActiveStudents(getActiveStudentsThisWeek().length);
   };
 
   return (
@@ -38,7 +38,7 @@ export default function DirectorsPage() {
           />
         </div>
         <p style={{ color: '#6b7280', fontSize: '14px' }}>
-          Camp Director&apos;s Timer
+          Camp Director&apos;s Timer - {WEEKLY_DATA[CURRENT_WEEK].name}
         </p>
       </div>
 
@@ -144,7 +144,7 @@ export default function DirectorsPage() {
           marginBottom: '8px', 
           textAlign: 'center' 
         }}>
-          Today&apos;s Quick Stats
+          This Week&apos;s Stats ({WEEKLY_DATA[CURRENT_WEEK].name})
         </h3>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
           <div style={{ 
@@ -156,7 +156,7 @@ export default function DirectorsPage() {
             <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#dc2626' }}>
               {todayClimbs}
             </div>
-            <div style={{ fontSize: '12px', color: '#6b7280' }}>Climbs Today</div>
+            <div style={{ fontSize: '12px', color: '#6b7280' }}>Climbs This Week</div>
           </div>
           <div style={{ 
             backgroundColor: '#eff6ff', 
@@ -167,7 +167,7 @@ export default function DirectorsPage() {
             <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#2563eb' }}>
               {activeStudents}
             </div>
-            <div style={{ fontSize: '12px', color: '#6b7280' }}>Students Active</div>
+            <div style={{ fontSize: '12px', color: '#6b7280' }}>Students This Week</div>
           </div>
         </div>
       </div>
