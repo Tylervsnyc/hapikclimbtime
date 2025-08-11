@@ -377,7 +377,7 @@ export default function ClimbPage() {
                   cursor: 'pointer'
                 }}
               >
-                ❌ Don't Save
+                ❌ Don&apos;t Save
               </button>
             </div>
           </div>

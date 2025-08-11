@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { WALLS, getStudentStats, getStudentClimbs } from '@/data/store';
+import { WALLS, getStudentStats } from '@/data/store';
 
 export default function ProfilePage() {
   // Get the student name from the URL
