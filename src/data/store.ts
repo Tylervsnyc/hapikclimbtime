@@ -3,8 +3,7 @@ import { ClimbRecord, Student, Wall, WallStats } from './types';
 import { 
   saveClimbToFirebase, 
   getWeekClimbs, 
-  subscribeToWeekClimbs,
-  getStudentWeekClimbs 
+  subscribeToWeekClimbs
 } from '@/lib/firebaseService';
 
 // Our climbing walls data - using the 15 uploaded images!

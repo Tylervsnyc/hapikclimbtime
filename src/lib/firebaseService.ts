@@ -2,7 +2,6 @@
 import { 
   collection, 
   doc, 
-  setDoc, 
   getDocs, 
   query, 
   where, 
@@ -27,7 +26,12 @@ const COLLECTIONS = {
 const toFirestoreTimestamp = (date: Date) => Timestamp.fromDate(date);
 
 // Convert Firestore Timestamp to Date
-const fromFirestoreTimestamp = (timestamp: any) => timestamp?.toDate() || new Date();
+const fromFirestoreTimestamp = (timestamp: any) => {
+  if (timestamp && typeof timestamp.toDate === 'function') {
+    return timestamp.toDate();
+  }
+  return new Date();
+};
 
 // Save a new climb record to Firebase
 export const saveClimbToFirebase = async (
@@ -174,7 +178,7 @@ export const updateClimb = async (
 ): Promise<boolean> => {
   try {
     const docRef = doc(db, COLLECTIONS.CLIMBS, climbId);
-    const updateData: any = { ...updates };
+    const updateData: Record<string, unknown> = { ...updates };
     
     // Convert Date to Timestamp if present
     if (updates.timestamp) {
