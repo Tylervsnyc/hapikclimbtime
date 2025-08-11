@@ -357,8 +357,12 @@ let climbRecords: ClimbRecord[] = [];
 let currentSessionId = 'session_' + Date.now();
 
 // Subscribe to real-time updates from Firebase
-export const subscribeToRealTimeUpdates = (callback: (climbs: ClimbRecord[]) => void) => {
+export const subscribeToRealTimeUpdates = (callback: (climbRecords: ClimbRecord[]) => void) => {
+  console.log(`🔄 Setting up real-time subscription for week: ${CURRENT_WEEK}`);
+  
   return subscribeToWeekClimbs(CURRENT_WEEK, (firebaseClimbs) => {
+    console.log(`📡 Store received real-time update: ${firebaseClimbs.length} climbs`);
+    
     // Update local memory
     climbRecords = firebaseClimbs;
     

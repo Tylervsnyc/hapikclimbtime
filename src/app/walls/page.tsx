@@ -87,30 +87,11 @@ function WallsPageContent() {
         borderRadius: '8px', 
         padding: '8px', 
         textAlign: 'center',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between'
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
       }}>
-        <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: '#1f2937', flex: 1 }}>
+        <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: '#1f2937' }}>
           Time {studentName} on the Walls! 🧗‍♂️
         </h2>
-        <button
-          onClick={() => setUpdateTrigger(prev => prev + 1)}
-          style={{
-            backgroundColor: '#059669',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            padding: '4px 8px',
-            fontSize: '12px',
-            cursor: 'pointer',
-            fontWeight: '500'
-          }}
-          title="Refresh stats"
-        >
-          🔄
-        </button>
       </div>
 
       {/* Walls Grid - Larger, more legible 3x5 layout for 15 walls with scrolling */}

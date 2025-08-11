@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { ClimbRecord, WallStats } from '@/data/types';
+import { WALLS } from '@/data/store';
 
 // Collection names
 const COLLECTIONS = {
@@ -41,9 +42,14 @@ export const saveClimbToFirebase = async (
   weekId: string
 ): Promise<string> => {
   try {
+    // Get wall name from the WALLS array
+    const wall = WALLS.find(w => w.id === wallId);
+    const wallName = wall ? wall.name : 'Unknown Wall';
+    
     const climbData = {
       studentName,
       wallId,
+      wallName,
       timeInSeconds,
       weekId,
       timestamp: toFirestoreTimestamp(new Date()),
@@ -134,6 +140,8 @@ export const subscribeToWeekClimbs = (
   weekId: string, 
   callback: (climbs: ClimbRecord[]) => void
 ) => {
+  console.log(`🔍 Setting up real-time listener for week: ${weekId}`);
+  
   const q = query(
     collection(db, COLLECTIONS.CLIMBS),
     where('weekId', '==', weekId),
@@ -141,9 +149,13 @@ export const subscribeToWeekClimbs = (
   );
   
   return onSnapshot(q, (querySnapshot) => {
+    console.log(`📡 Real-time update received for week ${weekId}: ${querySnapshot.size} documents`);
+    
     const climbs: ClimbRecord[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
+      console.log(`📄 Document data:`, data);
+      
       climbs.push({
         id: doc.id,
         studentName: data.studentName,
@@ -155,7 +167,10 @@ export const subscribeToWeekClimbs = (
       });
     });
     
+    console.log(`🔄 Calling callback with ${climbs.length} climbs`);
     callback(climbs);
+  }, (error) => {
+    console.error(`❌ Real-time listener error for week ${weekId}:`, error);
   });
 };
 

@@ -148,38 +148,15 @@ export default function DirectorsPage() {
         padding: '12px',
         marginBottom: '12px'
       }}>
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between', 
-          marginBottom: '8px' 
+        <h3 style={{ 
+          fontSize: '16px', 
+          fontWeight: 'bold', 
+          color: '#1f2937', 
+          marginBottom: '8px', 
+          textAlign: 'center' 
         }}>
-          <h3 style={{ 
-            fontSize: '16px', 
-            fontWeight: 'bold', 
-            color: '#1f2937', 
-            textAlign: 'center',
-            flex: 1
-          }}>
-            This Week&apos;s Stats ({WEEKLY_DATA[CURRENT_WEEK].name})
-          </h3>
-          <button
-            onClick={updateStats}
-            style={{
-              backgroundColor: '#059669',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              padding: '4px 8px',
-              fontSize: '12px',
-              cursor: 'pointer',
-              fontWeight: '500'
-            }}
-            title="Refresh stats"
-          >
-            🔄 Refresh
-          </button>
-        </div>
+          This Week&apos;s Stats ({WEEKLY_DATA[CURRENT_WEEK].name})
+        </h3>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
           <div style={{ 
             backgroundColor: '#fef2f2', 
