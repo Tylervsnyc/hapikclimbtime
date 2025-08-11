@@ -72,16 +72,33 @@ export default function DirectorsPage() {
       <div style={{ position: 'relative', zIndex: 1 }}>
       {/* Header with Hapik branding */}
       <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
-          <img 
-            src="/images/Industry City Logo Red.png" 
-            alt="Hapik Logo" 
-            style={{ height: '32px', width: 'auto' }}
-          />
+        {/* Window frame around logo */}
+        <div style={{
+          display: 'inline-block',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          padding: '20px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+          border: '2px solid #e5e7eb',
+          marginBottom: '16px'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+            <img 
+              src="/images/Industry City Logo Red.png" 
+              alt="Hapik Logo" 
+              style={{ height: '64px', width: 'auto' }} // Doubled from 32px to 64px
+            />
+          </div>
+          <p style={{ 
+            color: '#1f2937', 
+            fontSize: '16px', 
+            fontWeight: 'bold',
+            margin: 0,
+            textAlign: 'center'
+          }}>
+            Summer Camp Climb Time Tracker August 11-15th
+          </p>
         </div>
-        <p style={{ color: '#6b7280', fontSize: '14px' }}>
-          Camp Director&apos;s Timer - {WEEKLY_DATA[CURRENT_WEEK].name} (v2.0)
-        </p>
       </div>
 
       {/* Student Selection Section */}
