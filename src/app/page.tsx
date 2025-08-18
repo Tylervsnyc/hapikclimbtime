@@ -8,6 +8,8 @@ export default function DirectorsPage() {
   const [selectedStudent, setSelectedStudent] = useState<string>('');
   const [todayClimbs, setTodayClimbs] = useState(0);
   const [activeStudents, setActiveStudents] = useState(0);
+  
+  // 🔐 **Authentication temporarily disabled for testing**
 
   useEffect(() => {
     const initApp = async () => {
@@ -16,18 +18,12 @@ export default function DirectorsPage() {
       updateStats();
       
       console.log('📡 Setting up real-time subscription...');
-      // Subscribe to real-time updates
-      const unsubscribe = subscribeToRealTimeUpdates(() => {
-        console.log('🔄 Real-time update received, updating stats...');
-        updateStats();
-      });
-      
-      console.log('✅ Real-time subscription set up successfully');
+      // TEMPORARILY DISABLE FIREBASE SUBSCRIPTION TO FOCUS ON AUTH SYSTEM
+      console.log('🚫 Firebase subscription temporarily disabled');
       
       // Cleanup subscription on unmount
       return () => {
-        console.log('🧹 Cleaning up real-time subscription');
-        unsubscribe();
+        console.log('🧹 No Firebase subscription to clean up');
       };
     };
     initApp();
@@ -96,8 +92,88 @@ export default function DirectorsPage() {
             margin: 0,
             textAlign: 'center'
           }}>
-            Summer Camp Climb Time Tracker August 11-15th
+            Summer Camp Climb Time Tracker August 18-23rd
           </p>
+        </div>
+      </div>
+
+              {/* 🧗‍♀️ **Climbing Timer Section** */}
+        <div style={{ 
+          backgroundColor: 'white', 
+          borderRadius: '8px', 
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)', 
+          padding: '16px',
+          marginBottom: '16px',
+          border: '2px solid #059669'
+        }}>
+          <h3 style={{ 
+            fontSize: '18px', 
+            fontWeight: 'bold', 
+            color: '#059669', 
+            marginBottom: '12px',
+            textAlign: 'center'
+          }}>
+            🧗‍♀️ Climbing Timer
+          </h3>
+          
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ marginBottom: '16px', color: '#6b7280' }}>
+              Ready to time some climbs? Access the climbing timer here:
+            </p>
+            <Link href="/climb" style={{
+              backgroundColor: '#059669',
+              color: 'white',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              textDecoration: 'none',
+              fontWeight: '500',
+              display: 'inline-block'
+            }}>
+              🚀 Start Climbing Timer
+            </Link>
+          </div>
+        </div>
+
+        {/* 🔐 **Authentication Test Section - TEMPORARY FOR TESTING** */}
+        <div style={{ 
+          backgroundColor: 'white', 
+          borderRadius: '8px', 
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)', 
+          padding: '16px',
+          marginBottom: '16px',
+          border: '2px solid #7c3aed'
+        }}>
+        <h3 style={{ 
+          fontSize: '18px', 
+          fontWeight: 'bold', 
+          color: '#7c3aed', 
+          marginBottom: '12px',
+          textAlign: 'center'
+        }}>
+          🚀 Get Started with Hapik Climbing
+        </h3>
+        
+
+        
+        {/* Temporarily disabled auth for testing */}
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '12px', color: '#6b7280' }}>
+            🎯 Ready to start the Scavenger Hunt Challenge!
+          </div>
+          <div style={{ 
+            backgroundColor: '#fef3c7', 
+            borderRadius: '8px', 
+            padding: '12px',
+            border: '2px solid #f59e0b',
+            marginBottom: '16px'
+          }}>
+            <div style={{ fontSize: '14px', color: '#92400e', fontWeight: 'bold' }}>
+              ⚠️ Auth temporarily disabled for testing
+            </div>
+            <div style={{ fontSize: '12px', color: '#92400e' }}>
+              Firebase setup in progress - app will work without login for now
+            </div>
+          </div>
         </div>
       </div>
 
@@ -151,14 +227,13 @@ export default function DirectorsPage() {
         </div>
 
         {selectedStudent && (
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexDirection: 'column' }}>
             <Link 
               href={`/walls?student=${encodeURIComponent(selectedStudent)}`}
               style={{
-                flex: 1,
                 backgroundColor: '#dc2626',
                 color: 'white',
-                padding: '8px 16px',
+                padding: '12px 16px',
                 borderRadius: '8px',
                 textDecoration: 'none',
                 textAlign: 'center',
@@ -169,12 +244,26 @@ export default function DirectorsPage() {
               Time {selectedStudent} on the Walls! 🧗‍♂️
             </Link>
             <Link 
+              href={`/scavenger-hunt?student=${encodeURIComponent(selectedStudent)}`}
+              style={{
+                backgroundColor: '#f59e0b',
+                color: 'white',
+                padding: '12px 16px',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: '14px'
+              }}
+            >
+              🎯 Start Scavenger Hunt
+            </Link>
+            <Link 
               href={`/profile?student=${encodeURIComponent(selectedStudent)}`}
               style={{
-                flex: 1,
                 backgroundColor: '#059669',
                 color: 'white',
-                padding: '8px 16px',
+                padding: '12px 16px',
                 borderRadius: '8px',
                 textDecoration: 'none',
                 textAlign: 'center',
@@ -236,7 +325,7 @@ export default function DirectorsPage() {
           margin: 0,
           fontStyle: 'italic'
         }}>
-          Select a student above to start timing their climbs or view their profile!
+          Select a student above to start timing their climbs, view their profile, or start a scavenger hunt!
         </p>
       </div>
 
@@ -275,6 +364,8 @@ export default function DirectorsPage() {
           View climbing statistics, popular walls, and student performance
         </p>
       </div>
+
+
 
       </div>
     </div>

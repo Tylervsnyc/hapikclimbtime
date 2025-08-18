@@ -24,6 +24,16 @@ function ProfilePageContent() {
     return () => unsubscribe();
   }, []);
   
+  // Add scavenger hunt results to re-render trigger
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setUpdateTrigger((prev: number) => prev + 1);
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+  
   // Get student stats
   const studentStats = getStudentStats(studentName);
 
@@ -227,6 +237,100 @@ function ProfilePageContent() {
             </div>
           );
         })}
+      </div>
+
+      {/* Scavenger Hunt Section */}
+      <div style={{ 
+        backgroundColor: 'white', 
+        margin: '8px 12px', 
+        borderRadius: '8px', 
+        padding: '12px', 
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+      }}>
+        <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#f59e0b', marginBottom: '8px', textAlign: 'center' }}>
+          🎯 Scavenger Hunt Stats
+        </h3>
+        
+        {/* Real stats from local storage */}
+        {(() => {
+          const results = JSON.parse(localStorage.getItem('scavengerHuntResults') || '[]');
+          const studentResults = results.filter((r: any) => r.student === studentName);
+          const gamesPlayed = studentResults.length;
+          const totalScore = studentResults.reduce((sum: number, r: any) => sum + r.score, 0);
+          const bestResult = studentResults.reduce((best: any, current: any) => 
+            current.score > best.score ? current : best, { score: 0, timeUsed: 0, wallsCompleted: 0, totalWalls: 0 }
+          );
+          
+          if (gamesPlayed === 0) {
+            return (
+              <div style={{ textAlign: 'center', color: '#6b7280', fontSize: '12px', padding: '8px' }}>
+                No scavenger hunts completed yet. Start your first adventure!
+              </div>
+            );
+          }
+          
+          return (
+            <>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
+                <div style={{ 
+                  backgroundColor: '#fef3c7', 
+                  borderRadius: '6px', 
+                  padding: '8px', 
+                  textAlign: 'center' 
+                }}>
+                  <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#d97706' }}>
+                    {gamesPlayed}
+                  </div>
+                  <div style={{ fontSize: '10px', color: '#92400e' }}>Games Played</div>
+                </div>
+                <div style={{ 
+                  backgroundColor: '#dbeafe', 
+                  borderRadius: '6px', 
+                  padding: '8px', 
+                  textAlign: 'center' 
+                }}>
+                  <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#1d4ed8' }}>
+                    {totalScore}
+                  </div>
+                  <div style={{ fontSize: '10px', color: '#1e40af' }}>Total Score</div>
+                </div>
+              </div>
+              
+              <div style={{ 
+                backgroundColor: '#f0fdf4', 
+                borderRadius: '6px', 
+                padding: '8px', 
+                textAlign: 'center',
+                marginBottom: '12px'
+              }}>
+                <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#059669' }}>
+                  🏆 Best Score: {bestResult.score}
+                </div>
+                <div style={{ fontSize: '10px', color: '#047857' }}>
+                  {bestResult.wallsCompleted}/{bestResult.totalWalls} walls in {Math.floor(bestResult.timeUsed / 60)}:{(bestResult.timeUsed % 60).toString().padStart(2, '0')}
+                </div>
+              </div>
+            </>
+          );
+        })()}
+        
+        <Link 
+          href={`/scavenger-hunt?student=${encodeURIComponent(studentName)}`}
+          style={{
+            display: 'block',
+            width: '100%',
+            backgroundColor: '#f59e0b',
+            color: 'white',
+            padding: '10px',
+            borderRadius: '6px',
+            textDecoration: 'none',
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: '14px'
+          }}
+        >
+          🚀 Start New Hunt
+        </Link>
       </div>
 
       {/* Action Buttons */}

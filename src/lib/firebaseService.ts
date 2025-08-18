@@ -69,10 +69,10 @@ export const saveClimbToFirebase = async (
 // Get all climbs for a specific week
 export const getWeekClimbs = async (weekId: string): Promise<ClimbRecord[]> => {
   try {
-    // Create query without orderBy to avoid index requirements
     const q = query(
       collection(db, COLLECTIONS.CLIMBS),
-      where('weekId', '==', weekId)
+      where('weekId', '==', weekId),
+      orderBy('timestamp', 'desc')
     );
     
     const querySnapshot = await getDocs(q);
@@ -90,9 +90,6 @@ export const getWeekClimbs = async (weekId: string): Promise<ClimbRecord[]> => {
         sessionId: data.sessionId
       });
     });
-    
-    // Sort in memory instead of in the query
-    climbs.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
     
     console.log(`📊 Loaded ${climbs.length} climbs for week ${weekId}`);
     return climbs;
@@ -108,11 +105,11 @@ export const getStudentWeekClimbs = async (
   weekId: string
 ): Promise<ClimbRecord[]> => {
   try {
-    // Create query without orderBy to avoid index requirements
     const q = query(
       collection(db, COLLECTIONS.CLIMBS),
       where('weekId', '==', weekId),
-      where('studentName', '==', studentName)
+      where('studentName', '==', studentName),
+      orderBy('timestamp', 'desc')
     );
     
     const querySnapshot = await getDocs(q);
@@ -131,9 +128,6 @@ export const getStudentWeekClimbs = async (
       });
     });
     
-    // Sort in memory instead of in the query
-    climbs.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-    
     return climbs;
   } catch (error) {
     console.error('❌ Error loading student climbs from Firebase:', error);
@@ -148,10 +142,10 @@ export const subscribeToWeekClimbs = (
 ) => {
   console.log(`🔍 Setting up real-time listener for week: ${weekId}`);
   
-  // Create query without orderBy to avoid index requirements
   const q = query(
     collection(db, COLLECTIONS.CLIMBS),
-    where('weekId', '==', weekId)
+    where('weekId', '==', weekId),
+    orderBy('timestamp', 'desc')
   );
   
   return onSnapshot(q, (querySnapshot) => {
@@ -172,9 +166,6 @@ export const subscribeToWeekClimbs = (
         sessionId: data.sessionId
       });
     });
-    
-    // Sort in memory instead of in the query
-    climbs.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
     
     console.log(`🔄 Calling callback with ${climbs.length} climbs`);
     callback(climbs);
@@ -225,12 +216,12 @@ export const getStudentWallStatsRealTime = (
   weekId: string,
   callback: (stats: WallStats | null) => void
 ) => {
-  // Create query without orderBy to avoid index requirements
   const q = query(
     collection(db, COLLECTIONS.CLIMBS),
     where('weekId', '==', weekId),
     where('studentName', '==', studentName),
-    where('wallId', '==', wallId)
+    where('wallId', '==', wallId),
+    orderBy('timestamp', 'desc')
   );
   
   return onSnapshot(q, (querySnapshot) => {
@@ -240,14 +231,6 @@ export const getStudentWallStatsRealTime = (
     }
     
     const climbs = querySnapshot.docs.map(doc => doc.data());
-    
-    // Sort in memory instead of in the query
-    climbs.sort((a, b) => {
-      const timestampA = a.timestamp?.toDate?.() || new Date(0);
-      const timestampB = b.timestamp?.toDate?.() || new Date(0);
-      return timestampB.getTime() - timestampA.getTime();
-    });
-    
     const times = climbs.map(climb => climb.timeInSeconds);
     const bestTime = Math.min(...times);
     const averageTime = times.reduce((sum, time) => sum + time, 0) / times.length;

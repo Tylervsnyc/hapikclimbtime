@@ -24,13 +24,7 @@ export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : nul
 // Initialize Firestore
 export const db = getFirestore(app);
 
-// Initialize Auth (if needed later)
+// Initialize Auth
 export const auth = getAuth(app);
-
-// Note: For development testing, you can uncomment emulator connections
-// if (process.env.NODE_ENV === 'development') {
-//   // connectFirestoreEmulator(db, 'localhost', 8080);
-//   // connectAuthEmulator(auth, 'http://localhost:9099');
-// }
 
 export default app;

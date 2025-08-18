@@ -300,53 +300,27 @@ export const getActiveStudentsThisWeek = (): string[] => {
 
 // Load data from Firebase and localStorage for current week
 export const initializeStore = async () => {
+  // TODAY ONLY: Clear all existing data to start fresh
   try {
-    // First try to load from Firebase (real-time data)
-    console.log(`🔄 Loading data from Firebase for week: ${CURRENT_WEEK}`);
-    const firebaseClimbs = await getWeekClimbs(CURRENT_WEEK);
-    
-    if (firebaseClimbs.length > 0) {
-      climbRecords = firebaseClimbs;
-      console.log(`✅ Loaded ${climbRecords.length} climbs from Firebase for ${WEEKLY_DATA[CURRENT_WEEK].name}`);
-      
-      // Update localStorage with Firebase data
-      localStorage.setItem(`hapik_climbs_${CURRENT_WEEK}`, JSON.stringify(climbRecords));
-      console.log(`💾 Updated localStorage with Firebase data`);
-    } else {
-      // Fallback to localStorage if no Firebase data
-      const saved = localStorage.getItem(`hapik_climbs_${CURRENT_WEEK}`);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        climbRecords = parsed.map((record: ClimbRecord) => ({
-          ...record,
-          timestamp: new Date(record.timestamp)
-        }));
-        console.log(`💾 Loaded ${climbRecords.length} climbs from localStorage for ${WEEKLY_DATA[CURRENT_WEEK].name}`);
-      } else {
-        console.log(`🆕 Starting fresh week: ${WEEKLY_DATA[CURRENT_WEEK].name}`);
+    // Clear localStorage for fresh start today
+    const keys = Object.keys(localStorage);
+    keys.forEach(key => {
+      if (key.startsWith('hapik_climbs_')) {
+        localStorage.removeItem(key);
+        console.log(`🧹 Cleared: ${key}`);
       }
-    }
+    });
+    console.log(`🆕 Starting completely fresh today with new parent authentication system`);
   } catch (error) {
-    console.error(`❌ Error loading data from Firebase:`, error);
-    
-    // Fallback to localStorage
-    try {
-      const saved = localStorage.getItem(`hapik_climbs_${CURRENT_WEEK}`);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        climbRecords = parsed.map((record: ClimbRecord) => ({
-          ...record,
-          timestamp: new Date(record.timestamp)
-        }));
-        console.log(`💾 Fallback: Loaded ${climbRecords.length} climbs from localStorage`);
-      } else {
-        console.log(`🆕 Starting fresh week: ${WEEKLY_DATA[CURRENT_WEEK].name}`);
-      }
-    } catch (localError) {
-      console.error(`❌ Error loading from localStorage:`, localError);
-      console.log(`🆕 Starting completely fresh`);
-    }
+    console.log(`🆕 Starting fresh (localStorage clear failed)`);
   }
+  
+  // Initialize with empty data
+  climbRecords = [];
+  currentSessionId = 'session_' + Date.now();
+  
+  // TEMPORARILY DISABLE FIREBASE TO FOCUS ON AUTH SYSTEM
+  console.log('🚫 Firebase queries temporarily disabled - focusing on authentication system');
 };
 
 // Reload data from localStorage (useful when switching between students)
@@ -394,8 +368,10 @@ export const startNewSession = (sessionName: string) => {
 };
 
 // In-memory storage for climb records
-let climbRecords: ClimbRecord[] = [];
+let climbRecords: ClimbRecord[] = []; // Starting fresh today!
 let currentSessionId = 'session_' + Date.now();
+
+
 
 // Subscribe to real-time updates from Firebase
 export const subscribeToRealTimeUpdates = (callback: (climbRecords: ClimbRecord[]) => void) => {
