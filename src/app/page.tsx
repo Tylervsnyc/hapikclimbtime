@@ -1,43 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { STUDENTS, getThisWeekClimbCount, getActiveStudentsThisWeek, initializeStore, WEEKLY_DATA, CURRENT_WEEK, subscribeToRealTimeUpdates } from '@/data/store';
 
-export default function DirectorsPage() {
+export default function HapikClimbingApp() {
   const [selectedStudent, setSelectedStudent] = useState<string>('');
-  const [todayClimbs, setTodayClimbs] = useState(0);
-  const [activeStudents, setActiveStudents] = useState(0);
-  
-  // 🔐 **Authentication temporarily disabled for testing**
 
-  useEffect(() => {
-    const initApp = async () => {
-      console.log('🚀 Initializing app...');
-      await initializeStore();
-      updateStats();
-      
-      console.log('📡 Setting up real-time subscription...');
-      // TEMPORARILY DISABLE FIREBASE SUBSCRIPTION TO FOCUS ON AUTH SYSTEM
-      console.log('🚫 Firebase subscription temporarily disabled');
-      
-      // Cleanup subscription on unmount
-      return () => {
-        console.log('🧹 No Firebase subscription to clean up');
-      };
-    };
-    initApp();
-  }, []);
-
-  const updateStats = () => {
-    const climbCount = getThisWeekClimbCount();
-    const activeStudentsCount = getActiveStudentsThisWeek().length;
-    
-    console.log(`📊 Updating stats: ${climbCount} climbs, ${activeStudentsCount} active students`);
-    
-    setTodayClimbs(climbCount);
-    setActiveStudents(activeStudentsCount);
-  };
+  const STUDENTS = [
+    'Student 1',
+    'Student 2', 
+    'Student 3',
+    'Student 4',
+    'Student 5'
+  ];
 
   return (
     <div style={{ 
@@ -60,313 +35,306 @@ export default function DirectorsPage() {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.6)', // 60% white overlay = 40% transparent background
+        backgroundColor: 'rgba(255, 255, 255, 0.6)',
         zIndex: 0
       }}></div>
       
       {/* Content container with higher z-index */}
       <div style={{ position: 'relative', zIndex: 1 }}>
-      {/* Header with Hapik branding */}
-      <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-        {/* Window frame around logo */}
-        <div style={{
-          display: 'inline-block',
-          backgroundColor: 'white',
-          borderRadius: '12px',
-          padding: '20px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-          border: '2px solid #e5e7eb',
-          marginBottom: '16px'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
-            <img 
-              src="/images/Industry City Logo Red.png" 
-              alt="Hapik Logo" 
-              style={{ height: '64px', width: 'auto' }} // Doubled from 32px to 64px
-            />
-          </div>
-          <p style={{ 
-            color: '#1f2937', 
-            fontSize: '16px', 
-            fontWeight: 'bold',
-            margin: 0,
-            textAlign: 'center'
+        {/* Header with Hapik branding */}
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+          {/* Window frame around logo */}
+          <div style={{
+            display: 'inline-block',
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '20px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            border: '2px solid #e5e7eb',
+            marginBottom: '16px'
           }}>
-            Summer Camp Climb Time Tracker August 18-23rd
-          </p>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+              <img 
+                src="/images/Industry City Logo Red.png" 
+                alt="Hapik Logo" 
+                style={{ height: '64px', width: 'auto' }}
+              />
+            </div>
+            <p style={{ 
+              color: '#1f2937', 
+              fontSize: '16px', 
+              fontWeight: 'bold',
+              margin: 0,
+              textAlign: 'center'
+            }}>
+              Summer Camp Climb Time Tracker August 18-23rd
+            </p>
+          </div>
         </div>
-      </div>
 
-              {/* 🧗‍♀️ **Climbing Timer Section** */}
+        {/* Student Selection Section */}
         <div style={{ 
           backgroundColor: 'white', 
-          borderRadius: '8px', 
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)', 
-          padding: '16px',
-          marginBottom: '16px',
+          borderRadius: '16px', 
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
+          padding: '24px',
+          marginBottom: '20px',
           border: '2px solid #059669'
         }}>
           <h3 style={{ 
-            fontSize: '18px', 
+            fontSize: '20px', 
             fontWeight: 'bold', 
             color: '#059669', 
-            marginBottom: '12px',
+            marginBottom: '16px',
             textAlign: 'center'
           }}>
-            🧗‍♀️ Climbing Timer
+            👤 Select a Student
           </h3>
           
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ marginBottom: '16px', color: '#6b7280' }}>
-              Ready to time some climbs? Access the climbing timer here:
-            </p>
-            <Link href="/climb" style={{
-              backgroundColor: '#059669',
-              color: 'white',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              textDecoration: 'none',
-              fontWeight: '500',
-              display: 'inline-block'
-            }}>
-              🚀 Start Climbing Timer
-            </Link>
-          </div>
-        </div>
-
-        {/* 🔐 **Authentication Test Section - TEMPORARY FOR TESTING** */}
-        <div style={{ 
-          backgroundColor: 'white', 
-          borderRadius: '8px', 
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)', 
-          padding: '16px',
-          marginBottom: '16px',
-          border: '2px solid #7c3aed'
-        }}>
-        <h3 style={{ 
-          fontSize: '18px', 
-          fontWeight: 'bold', 
-          color: '#7c3aed', 
-          marginBottom: '12px',
-          textAlign: 'center'
-        }}>
-          🚀 Get Started with Hapik Climbing
-        </h3>
-        
-
-        
-        {/* Temporarily disabled auth for testing */}
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: '12px', color: '#6b7280' }}>
-            🎯 Ready to start the Scavenger Hunt Challenge!
-          </div>
-          <div style={{ 
-            backgroundColor: '#fef3c7', 
-            borderRadius: '8px', 
-            padding: '12px',
-            border: '2px solid #f59e0b',
-            marginBottom: '16px'
-          }}>
-            <div style={{ fontSize: '14px', color: '#92400e', fontWeight: 'bold' }}>
-              ⚠️ Auth temporarily disabled for testing
-            </div>
-            <div style={{ fontSize: '12px', color: '#92400e' }}>
-              Firebase setup in progress - app will work without login for now
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Student Selection Section */}
-      <div style={{ 
-        backgroundColor: 'white', 
-        borderRadius: '8px', 
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)', 
-        padding: '12px', 
-        marginBottom: '12px' 
-      }}>
-        <h2 style={{ 
-          fontSize: '18px', 
-          fontWeight: 'bold', 
-          color: '#1f2937', 
-          marginBottom: '12px', 
-          textAlign: 'center' 
-        }}>
-          Choose Your Climber
-        </h2>
-        
-        <div style={{ marginBottom: '12px' }}>
-          <label style={{ 
-            display: 'block', 
-            fontSize: '14px', 
-            fontWeight: '500', 
-            color: '#374151', 
-            marginBottom: '4px' 
-          }}>
-            Select Student:
-          </label>
           <select
             value={selectedStudent}
             onChange={(e) => setSelectedStudent(e.target.value)}
             style={{
               width: '100%',
-              padding: '8px',
-              border: '2px solid #d1d5db',
+              padding: '12px',
               borderRadius: '8px',
+              border: '2px solid #e5e7eb',
               fontSize: '16px',
-              outline: 'none'
+              marginBottom: '20px',
+              backgroundColor: 'white'
             }}
           >
-            <option value="">-- Pick a student --</option>
+            <option value="">Choose a student...</option>
             {STUDENTS.map((student) => (
               <option key={student} value={student}>
                 {student}
               </option>
             ))}
           </select>
+
+          {selectedStudent && (
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ 
+                marginBottom: '16px', 
+                color: '#6b7280',
+                fontSize: '16px'
+              }}>
+                Select a student above to start timing their climbs, view their profile, or start a scavenger hunt!
+              </p>
+              
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column',
+                gap: '12px',
+                maxWidth: '300px',
+                margin: '0 auto'
+              }}>
+                <Link 
+                  href={`/walls?student=${selectedStudent}`}
+                  style={{
+                    backgroundColor: '#059669',
+                    color: 'white',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    textDecoration: 'none',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    fontSize: '16px'
+                  }}
+                >
+                  🧗‍♀️ Time {selectedStudent} on the Walls!
+                </Link>
+                
+                <Link 
+                  href={`/scavenger-hunt?student=${selectedStudent}`}
+                  style={{
+                    backgroundColor: '#f59e0b',
+                    color: 'white',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    textDecoration: 'none',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    fontSize: '16px'
+                  }}
+                >
+                  🎯 Start Scavenger Hunt
+                </Link>
+                
+                <Link 
+                  href={`/profile?student=${selectedStudent}`}
+                  style={{
+                    backgroundColor: '#7c3aed',
+                    color: 'white',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    textDecoration: 'none',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    fontSize: '16px'
+                  }}
+                >
+                  👤 View {selectedStudent}'s Profile
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
 
-        {selectedStudent && (
-          <div style={{ display: 'flex', gap: '8px', flexDirection: 'column' }}>
+        {/* App Features Overview */}
+        <div style={{ 
+          backgroundColor: 'white', 
+          borderRadius: '16px', 
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
+          padding: '24px',
+          marginBottom: '20px'
+        }}>
+          <h3 style={{ 
+            fontSize: '20px', 
+            fontWeight: 'bold', 
+            color: '#1f2937', 
+            marginBottom: '16px',
+            textAlign: 'center'
+          }}>
+            🚀 Hapik Climbing App Features
+          </h3>
+          
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+            gap: '16px' 
+          }}>
+            <div style={{
+              backgroundColor: '#f0f9ff',
+              padding: '16px',
+              borderRadius: '8px',
+              border: '1px solid #0ea5e9'
+            }}>
+              <h4 style={{ color: '#0ea5e9', fontWeight: 'bold', marginBottom: '8px' }}>
+                🧗‍♀️ Wall Climbing
+              </h4>
+              <p style={{ fontSize: '14px', color: '#0369a1', margin: 0 }}>
+                Time climbs on Industry City's 16 unique climbing walls with real-time tracking
+              </p>
+            </div>
+            
+            <div style={{
+              backgroundColor: '#fef3c7',
+              padding: '16px',
+              borderRadius: '8px',
+              border: '1px solid #f59e0b'
+            }}>
+              <h4 style={{ color: '#f59e0b', fontWeight: 'bold', marginBottom: '8px' }}>
+                🎯 Scavenger Hunt
+              </h4>
+              <p style={{ fontSize: '14px', color: '#92400e', margin: 0 }}>
+                60-minute challenge to climb as many walls as possible guided by clues
+              </p>
+            </div>
+            
+            <div style={{
+              backgroundColor: '#f3e8ff',
+              padding: '16px',
+              borderRadius: '8px',
+              border: '1px solid #7c3aed'
+            }}>
+              <h4 style={{ color: '#7c3aed', fontWeight: 'bold', marginBottom: '8px' }}>
+                📊 Progress Tracking
+              </h4>
+              <p style={{ fontSize: '14px', color: '#5b21b6', margin: 0 }}>
+                View climbing history, personal bests, and achievements for each student
+              </p>
+            </div>
+            
+            <div style={{
+              backgroundColor: '#ecfdf5',
+              padding: '16px',
+              borderRadius: '8px',
+              border: '1px solid #059669'
+            }}>
+              <h4 style={{ color: '#059669', fontWeight: 'bold', marginBottom: '8px' }}>
+                📈 Analytics Dashboard
+              </h4>
+              <p style={{ fontSize: '14px', color: '#047857', margin: 0 }}>
+                Staff dashboard with comprehensive climbing statistics and trends
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Access Links */}
+        <div style={{ 
+          backgroundColor: 'white', 
+          borderRadius: '16px', 
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
+          padding: '24px',
+          marginBottom: '20px'
+        }}>
+          <h3 style={{ 
+            fontSize: '20px', 
+            fontWeight: 'bold', 
+            color: '#1f2937', 
+            marginBottom: '16px',
+            textAlign: 'center'
+          }}>
+            🔗 Quick Access
+          </h3>
+          
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            gap: '12px',
+            maxWidth: '300px',
+            margin: '0 auto'
+          }}>
             <Link 
-              href={`/walls?student=${encodeURIComponent(selectedStudent)}`}
+              href="/manager"
+              style={{
+                backgroundColor: '#6b7280',
+                color: 'white',
+                padding: '12px 16px',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+                textAlign: 'center',
+                fontSize: '16px'
+              }}
+            >
+              📊 Staff Analytics Dashboard
+            </Link>
+            
+            <Link 
+              href="/walls"
               style={{
                 backgroundColor: '#dc2626',
                 color: 'white',
                 padding: '12px 16px',
                 borderRadius: '8px',
                 textDecoration: 'none',
-                textAlign: 'center',
                 fontWeight: 'bold',
-                fontSize: '14px'
+                textAlign: 'center',
+                fontSize: '16px'
               }}
             >
-              Time {selectedStudent} on the Walls! 🧗‍♂️
+              🧱 View All Climbing Walls
             </Link>
-            <Link 
-              href={`/scavenger-hunt?student=${encodeURIComponent(selectedStudent)}`}
-              style={{
-                backgroundColor: '#f59e0b',
-                color: 'white',
-                padding: '12px 16px',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                textAlign: 'center',
-                fontWeight: 'bold',
-                fontSize: '14px'
-              }}
-            >
-              🎯 Start Scavenger Hunt
-            </Link>
-            <Link 
-              href={`/profile?student=${encodeURIComponent(selectedStudent)}`}
-              style={{
-                backgroundColor: '#059669',
-                color: 'white',
-                padding: '12px 16px',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                textAlign: 'center',
-                fontWeight: 'bold',
-                fontSize: '14px'
-              }}
-            >
-              View {selectedStudent}&apos;s Profile 📊
-            </Link>
-          </div>
-        )}
-      </div>
-
-      {/* Quick Stats Preview */}
-      <div style={{ 
-        backgroundColor: 'white', 
-        borderRadius: '8px', 
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)', 
-        padding: '16px',
-        marginBottom: '12px'
-      }}>
-        <h3 style={{ 
-          fontSize: '16px', 
-          fontWeight: 'bold', 
-          color: '#1f2937', 
-          marginBottom: '8px', 
-          textAlign: 'center' 
-        }}>
-          This Week&apos;s Stats ({WEEKLY_DATA[CURRENT_WEEK].name})
-        </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
-          <div style={{ 
-            backgroundColor: '#fef2f2', 
-            borderRadius: '8px', 
-            padding: '8px', 
-            textAlign: 'center' 
-          }}>
-            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#dc2626' }}>
-              {todayClimbs}
-            </div>
-            <div style={{ fontSize: '12px', color: '#6b7280' }}>Climbs This Week</div>
-          </div>
-          <div style={{ 
-            backgroundColor: '#eff6ff', 
-            borderRadius: '8px', 
-            padding: '8px', 
-            textAlign: 'center' 
-          }}>
-            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#2563eb' }}>
-              {activeStudents}
-            </div>
-            <div style={{ fontSize: '12px', color: '#6b7280' }}>Students This Week</div>
           </div>
         </div>
-        <p style={{ 
+
+        {/* Footer */}
+        <div style={{ 
           textAlign: 'center', 
-          color: '#6b7280', 
-          fontSize: '13px',
-          margin: 0,
-          fontStyle: 'italic'
+          padding: '20px',
+          color: '#6b7280',
+          fontSize: '14px'
         }}>
-          Select a student above to start timing their climbs, view their profile, or start a scavenger hunt!
-        </p>
-      </div>
-
-      {/* Manager's View Button */}
-      <div style={{ 
-        backgroundColor: 'white', 
-        borderRadius: '8px', 
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)', 
-        padding: '16px',
-        marginBottom: '12px'
-      }}>
-        <Link 
-          href="/manager"
-          style={{
-            display: 'block',
-            backgroundColor: '#7c3aed',
-            color: 'white',
-            padding: '12px 24px',
-            borderRadius: '8px',
-            textDecoration: 'none',
-            textAlign: 'center',
-            fontWeight: 'bold',
-            fontSize: '16px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-          }}
-        >
-          📊 Manager&apos;s Analytics Dashboard
-        </Link>
-        <p style={{ 
-          textAlign: 'center', 
-          color: '#6b7280', 
-          fontSize: '12px',
-          margin: '8px 0 0 0',
-          fontStyle: 'italic'
-        }}>
-          View climbing statistics, popular walls, and student performance
-        </p>
-      </div>
-
-
-
+          <p style={{ margin: '0 0 8px 0' }}>
+            🏢 Industry City Climbing Center
+          </p>
+          <p style={{ margin: 0 }}>
+            Built with Next.js • React • Tailwind CSS
+          </p>
+        </div>
       </div>
     </div>
   );
