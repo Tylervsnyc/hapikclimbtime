@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { ClimberProvider } from "@/contexts/ClimberContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,11 +29,7 @@ export default function RootLayout({
           minHeight: '100vh', 
           boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' 
         }}>
-          <AuthProvider>
-            <ClimberProvider>
-              {children}
-            </ClimberProvider>
-          </AuthProvider>
+          {children}
         </div>
       </body>
     </html>
